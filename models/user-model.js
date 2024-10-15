@@ -6,6 +6,7 @@ const {
   ACCESSTOKEEXPIRETIME,
   REFRESHTOKEEXPIRETIME,
 } = require("../enums/index");
+const { APP_ROLES } = require("../utils/enums");
 
 const UserSchema = new mongoose.Schema(
   {
@@ -25,6 +26,10 @@ const UserSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default: null,
+    },
+    role: {
+      type: String,
+      default: APP_ROLES.PATIENT,
     },
   },
   { timestamps: true }
