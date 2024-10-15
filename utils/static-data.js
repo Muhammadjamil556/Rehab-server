@@ -9,16 +9,18 @@ const medicinesData = [
     imageURL:
       "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/f5a26c491e4d48199ab116a69a969be3.jpg",
     manufacturer: "Roche Products India Pvt Ltd",
+    price: 6500,
   },
   {
     id: 2,
     name: "Augmentin 625 Duo Tablet",
-    composition: "Amoxycillin  (500mg) +  Clavulanic Acid (125mg)",
+    composition: "Amoxycillin (500mg) + Clavulanic Acid (125mg)",
     uses: "Treatment of Bacterial infections",
     sideEffects: "Vomiting, Nausea, Diarrhea, Mucocutaneous candidiasis",
     imageURL:
       "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/wy2y9bdipmh6rgkrj0zm.jpg",
     manufacturer: "Glaxo SmithKline Pharmaceuticals Ltd",
+    price: 2800,
   },
   {
     id: 3,
@@ -29,6 +31,7 @@ const medicinesData = [
     imageURL:
       "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/cropped/kqkouvaqejbyk47dvjfu.jpg",
     manufacturer: "Alembic Pharmaceuticals Ltd",
+    price: 3900,
   },
   {
     id: 4,
@@ -41,6 +44,7 @@ const medicinesData = [
     imageURL:
       "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/3205599cc49d4073ae66cbb0dbfded86.jpg",
     manufacturer: "Glenmark Pharmaceuticals Ltd",
+    price: 4500,
   },
   {
     id: 5,
@@ -51,6 +55,7 @@ const medicinesData = [
     imageURL:
       "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/cropped/pn7apngctvrtweencwi1.jpg",
     manufacturer: "Cadila Pharmaceuticals Ltd",
+    price: 2200,
   },
   {
     id: 6,
@@ -61,6 +66,7 @@ const medicinesData = [
     imageURL:
       "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/fa7427131ec64163b5bbafb529df0736.jpg",
     manufacturer: "Sanofi India Ltd",
+    price: 3300,
   },
   {
     id: 7,
@@ -71,6 +77,7 @@ const medicinesData = [
     imageURL:
       "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/cropped/mmsye6bf97tkcocat24j.jpg",
     manufacturer: "Sanofi India Ltd",
+    price: 2100,
   },
   {
     id: 8,
@@ -82,18 +89,19 @@ const medicinesData = [
     imageURL:
       "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/d7ojjdaw2gsm5sie1glu.jpg",
     manufacturer: "Eisai Pharmaceuticals India Pvt Ltd",
+    price: 4700,
   },
   {
     id: 9,
     name: "Amoxyclav 625 Tablet",
-    composition: "Amoxycillin  (500mg) +  Clavulanic Acid (125mg)",
+    composition: "Amoxycillin (500mg) + Clavulanic Acid (125mg)",
     uses: "Treatment of Bacterial infections",
     sideEffects: "Vomiting, Nausea, Diarrhea, Mucocutaneous candidiasis",
     imageURL:
       "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/acaa6608e016456f9cafcca2156ad3de.jpg",
     manufacturer: "Abbott",
+    price: 3800,
   },
-  // Continue adding other medicines...
   {
     id: 21,
     name: "Betacap TR 40 Capsule",
@@ -104,6 +112,7 @@ const medicinesData = [
     imageURL:
       "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/cropped/gbo9tlhcy1vsyn0gah0m.jpg",
     manufacturer: "Sun Pharmaceutical Industries Ltd",
+    price: 5200,
   },
   {
     id: 22,
@@ -115,6 +124,7 @@ const medicinesData = [
     imageURL:
       "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/cropped/oxlsk7ifb0ucpqvhhd7t.jpg",
     manufacturer: "Mankind Pharma Ltd",
+    price: 4400,
   },
   {
     id: 23,
@@ -126,83 +136,31 @@ const medicinesData = [
     imageURL:
       "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/awr4rj8c8lmyudkfy6rb.jpg",
     manufacturer: "Glaxo SmithKline Pharmaceuticals Ltd",
+    price: 2700,
   },
   {
     id: 24,
-    name: "Bandy-Plus Tablet",
-    composition: "Albendazole (400mg) + Ivermectin (6mg)",
-    uses: "Treatment of Parasitic worm infections",
+    name: "Berodual 100mcg Metered Dose Inhaler",
+    composition:
+      "Ipratropium Bromide (20mcg) + Fenoterol Hydrobromide (100mcg)",
+    uses: "Treatment of Bronchospasm in patients with asthma or chronic obstructive pulmonary disease (COPD)",
     sideEffects:
-      "Abdominal pain, Constipation, Diarrhea, Loss of appetite, Headache, Dizziness, Hair loss, Itching, Urticaria, Fatigue, Fever, Rigors",
+      "Nausea, Tremor, Palpitations, Dry mouth, Throat irritation, Dizziness",
     imageURL:
-      "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/cropped/txvld6xayhfqc7ovdkgv.jpg",
-    manufacturer: "Mankind Pharma Ltd",
+      "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/9c19c1f2d80b46e4934a79e0ecb1526b.jpg",
+    manufacturer: "Boehringer Ingelheim India Pvt Ltd",
+    price: 5500,
   },
   {
     id: 25,
-    name: "Beplex Forte Capsule",
-    composition:
-      "Niacinamide (vitamin B3) (100mg) + Vitamin B12 (15mcg) + Vitamin B6 (Pyridoxine) (3mg) + Vitamin C (75mg)",
-    uses: "Treatment of Acne, Treatment of Anemia, Wound healing, Treatment of Osteoarthritis",
-    sideEffects: "Nausea, Vomiting, Abdominal cramp, Diarrhea",
+    name: "Betadine Antiseptic Solution",
+    composition: "Povidone Iodine (10%)",
+    uses: "Treatment of Minor cuts, Scrapes, and Burns, Disinfecting the skin",
+    sideEffects: "Skin irritation, Allergic reaction",
     imageURL:
-      "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/h9tqsgpi1gahhy6tacuf.jpg",
-    manufacturer: "Mankind Pharma Ltd",
-  },
-  {
-    id: 26,
-    name: "Becosules Capsule",
-    composition:
-      "Beta-carotene (2500IU) + Biotin (30mcg) + Folic Acid (vitamin B9) (1.5mg) + Niacinamide (vitamin B3) (100mg) + Riboflavin (vitamin B2) (10mg) + Thiamine (vitamin B1) (10mg) + Vitamin B12 (15mcg) + Vitamin C (75mg) + Vitamin D3 (400IU) + Vitamin E (15IU) + Zinc (22.5mg)",
-    uses: "Nutritional deficiencies, Pregnancy, Osteoporosis",
-    sideEffects: "Nausea, Vomiting, Abdominal cramp, Diarrhea",
-    imageURL:
-      "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/ijujlszvqqsqdfjknyxd.jpg",
-    manufacturer: "Pfizer Ltd",
-  },
-  {
-    id: 27,
-    name: "Betnesol Tablet",
-    composition: "Betamethasone (500mcg)",
-    uses: "Treatment of Allergic conditions, Asthma, Rheumatic disorder, Skin disorders, Eye disorders, Nephrotic syndrome, Connective tissue disorder",
-    sideEffects:
-      "Weight gain, Increased appetite, Mood changes, Acne, Muscle weakness, Increased blood pressure, Increased blood glucose level, Cushingoid appearance, Osteoporosis, Increased risk of infection",
-    imageURL:
-      "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/uilvdu5alvbxmxqme8hf.jpg",
-    manufacturer: "Glaxo SmithKline Pharmaceuticals Ltd",
-  },
-  {
-    id: 28,
-    name: "Betacap 20 Tablet",
-    composition: "Propranolol (20mg)",
-    uses: "Prevention of Migraine, Treatment of Hypertension (high blood pressure), Prevention of Heart attack, Prevention of Angina (heart-related chest pain), Treatment of Arrhythmia, Treatment of Tremors, Treatment of Anxiety, Treatment of Pheochromocytoma",
-    sideEffects:
-      "Tiredness, Weakness, Raynaud's phenomenon, Arrhythmia (irregular heartbeats), Nausea, Vomiting, Diarrhea",
-    imageURL:
-      "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/ksekc9ojpf5x8cbrsf9i.jpg",
-    manufacturer: "Sun Pharmaceutical Industries Ltd",
-  },
-  {
-    id: 29,
-    name: "Brutaflam-MR 4 Tablet",
-    composition: "Etoricoxib (60mg) + Thiocolchicoside (4mg)",
-    uses: "Treatment of Pain due to muscle spasm",
-    sideEffects:
-      "Diarrhea, Stomach pain, Indigestion, Flatulence, Swelling of hands, Feet swelling, Flu-like symptoms",
-    imageURL:
-      "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/cropped/qd1xcswzvcccpqflknsa.jpg",
-    manufacturer: "Mankind Pharma Ltd",
-  },
-  {
-    id: 30,
-    name: "Becosules Syrup",
-    composition:
-      "Cyanocobalamin (vitamin B12) (5mcg) + Folic Acid (vitamin B9) (1.5mg) + Niacinamide (vitamin B3) (50mg) + Pyridoxine (vitamin B6) (1.5mg)",
-    uses: "Nutritional deficiencies, Pregnancy, Osteoporosis",
-    sideEffects: "Nausea, Vomiting, Abdominal cramp, Diarrhea",
-    imageURL:
-      "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/cropped/n5vxrlgcemxxidufm3z5.jpg",
-    manufacturer: "Pfizer Ltd",
+      "https://onemg.gumlet.io/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/22f94663b9c8442c96476f9f51fd86cb.jpg",
+    manufacturer: "Medihealth Pharmaceuticals Pvt Ltd",
+    price: 2000,
   },
 ];
 
