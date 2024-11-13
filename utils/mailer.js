@@ -1,42 +1,40 @@
-// utils/mailer.js
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
 
-// Load the HTML template
-const loadTemplate = (name, email, password) => {
+const loadTemplate = (type, variables) => {
   const templatePath = path.join(
     __dirname,
     "../mails",
-    "registrationEmailTemplate.html"
+    `${type}EmailTemplate.html`
   );
+
   let template = fs.readFileSync(templatePath, "utf8");
 
   // Replace placeholders with actual values
-  template = template.replace("{{name}}", name);
-  template = template.replace("{{email}}", email);
-  template = template.replace("{{password}}", password);
+  for (const [key, value] of Object.entries(variables)) {
+    template = template.replace(new RegExp(`{{${key}}}`, "g"), value);
+  }
 
   return template;
 };
 
 const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_HOST_NAME,
-  port: 465,
-  secure: true,
+  host: process.env.MAIL_HOST_NAME || "smtp.gmail.com", // Ensure this is correct
+  port: 465, // This is typically for SSL
+  secure: true, // Use SSL for port 465
   auth: {
-    user: process.env.EMAIL,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.EMAIL, // Your email address
+    pass: process.env.EMAIL_PASS, // Your email password or app password
   },
 });
-
-const sendMail = async (to, name, email, password) => {
-  const htmlTemplate = loadTemplate(name, email, password);
+const sendMail = async ({ to, subject, type, variables }) => {
+  const htmlTemplate = loadTemplate(type, variables);
 
   const mailOptions = {
     from: process.env.EMAIL,
     to,
-    subject: "hazenai Registration",
+    subject,
     html: htmlTemplate,
   };
 
