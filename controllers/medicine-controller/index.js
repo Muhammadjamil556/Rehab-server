@@ -1,11 +1,9 @@
 const asyncHandler = require("express-async-handler");
 const { medicinesData } = require("../../utils/static-data");
-
+const Medicine = require("../../models/medicine-model");
 const GetAllMedicines = asyncHandler(async (req, res) => {
   try {
-    return res
-      .status(200)
-      .send({ message: "Successfully Fetched Data", response: medicinesData });
+    return res.status(200).send({ message: "Successfully Fetched Data", response: medicinesData });
   } catch (error) {
     return handleErrorResponse(res, error);
   }
@@ -19,14 +17,24 @@ const GetMedicineById = asyncHandler(async (req, res) => {
     }
 
     const medicine = medicinesData.find((med) => med.id === id);
-    return res
-      .status(200)
-      .send({ message: "Successfully Fetched Data", response: medicine });
+    return res.status(200).send({ message: "Successfully Fetched Data", response: medicine });
   } catch (error) {
-    return res
-      .status(500)
-      .send({ message: "Error Fetching Data", error: error.message });
+    return res.status(500).send({ message: "Error Fetching Data", error: error.message });
   }
 });
 
-module.exports = { GetAllMedicines, GetMedicineById };
+const saveMedicine = async (req, res) => {
+  try {
+    // Use the static medicinesData to save to the database
+    const savedMedicines = await Medicine.insertMany(medicinesData);
+
+    res.status(201).json({
+      message: "Medicines saved successfully!",
+      data: savedMedicines,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to save medicines", error });
+  }
+};
+
+module.exports = { GetAllMedicines, GetMedicineById, saveMedicine };

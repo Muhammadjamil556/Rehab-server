@@ -6,6 +6,9 @@ const {
   LoginUser,
   ForgotPassword,
   ResetPassword,
+  createAppointment,
+  getAppointments,
+  verifyDoctor,
 } = require("../../controllers/user-controller");
 const multer = require("multer");
 
@@ -19,5 +22,8 @@ UserRouter.post("/login", LoginUser);
 
 UserRouter.post("/forgot-password", ForgotPassword);
 UserRouter.put("/password-reset/:token", ResetPassword);
+UserRouter.post("/create-appointment", createAppointment);
+UserRouter.post("/get-appointments", getAppointments);
+UserRouter.post("/verify-doctor", verifyDoctor);
 
 module.exports = { UserRouter };
