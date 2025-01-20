@@ -8,7 +8,12 @@ const { sendToken } = require("../../utils/tokens.js");
 const { cloudinary } = require("../../utils/cloudinary.js");
 const { sendMail } = require("../../utils/mailer.js");
 const { APP_ROLES } = require("../../utils/enums.js");
-const { DoctorModel, AppointmentModel } = require("../../models/doctor-model.js");
+const {
+  DoctorModel,
+  AppointmentModel,
+} = require("../../models/doctor-model.js");
+const { log } = require("console");
+const { sendMailFromDoc } = require("../../utils/sendMail.js");
 
 const FRONTEND_URL = "http://localhost:3000";
 
@@ -19,7 +24,7 @@ const RegisterUser = asyncHandler(async (req, res, next) => {
   try {
     const { name, email, password, confirmPassword, role } = req.body;
     const avatar = req.file; // Assuming you're handling file uploads using something like multer.
-
+    resetTokenStore;
     if (!name || !password || !email || !confirmPassword) {
       return res.status(400).send({
         message: "Please enter name, password, email, and confirm password",
@@ -34,7 +39,9 @@ const RegisterUser = asyncHandler(async (req, res, next) => {
 
     // Check if the password and confirm password match
     if (password !== confirmPassword) {
-      return res.status(400).send({ message: "Password and confirm password do not match" });
+      return res
+        .status(400)
+        .send({ message: "Password and confirm password do not match" });
     }
 
     // Check if email already exists
@@ -116,20 +123,30 @@ const LoginUser = asyncHandler(async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if email and password are provided
-    if (!email || !password) {
-      return res.status(400).send({ message: "Please provide email and password" });
+    // Check if email
+    if (!email) {
+      return res
+        .status(400)
+        .send({ message: "Please provide email and password" });
     }
 
     // Find user or doctor by email
-    let user = await UserModel.findOne({ email }).select("+password");
+    let user = await UserModel.findOne({ email }).select("+password +role");
     if (!user) {
-      user = await DoctorModel.findOne({ email }).select("+password");
+      user = await DoctorModel.findOne({ email }).select("+password +role");
+
+      if (!user.verified) {
+        return res.status(401).send({ message: "Pending Verification" });
+      }
     }
 
     // Check if the user/doctor exists
     if (!user) {
       return res.status(400).send({ message: "Invalid email or password" });
+    }
+
+    if (req.body.provider === "google") {
+      return sendToken(user, 200, res);
     }
 
     // Compare passwords
@@ -167,14 +184,19 @@ const ForgotPassword = asyncHandler(async (req, res) => {
 
   // Generate a reset token and hash it
   const resetToken = crypto.randomBytes(20).toString("hex");
-  const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
 
   console.log("Generated reset token:", resetToken);
 
   // Set expiration to 10 minutes from now
   const expirationTime = Date.now() + 10 * 60 * 1000;
   resetTokenStore.set(user._id.toString(), { hashedToken, expirationTime });
-  console.log(`Token stored for user ${user._id}, expires at ${new Date(expirationTime)}`);
+  console.log(
+    `Token stored for user ${user._id}, expires at ${new Date(expirationTime)}`
+  );
 
   // Prepare reset password URL and message
   const resetUrl = `${FRONTEND_URL}/password-reset/${resetToken}`;
@@ -216,7 +238,10 @@ const ResetPassword = asyncHandler(async (req, res) => {
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
   // Find user by matching hashed token in the in-memory store
-  const userEntry = Array.from(resetTokenStore.entries()).find(([, value]) => value.hashedToken === hashedToken && value.expirationTime > Date.now());
+  const userEntry = Array.from(resetTokenStore.entries()).find(
+    ([, value]) =>
+      value.hashedToken === hashedToken && value.expirationTime > Date.now()
+  );
 
   if (!userEntry) {
     return res.status(400).json({ message: "Invalid or expired token" });
@@ -237,7 +262,7 @@ const ResetPassword = asyncHandler(async (req, res) => {
 // Create Appointment
 const createAppointment = asyncHandler(async (req, res) => {
   try {
-    const { doctorId, patientId, date, time } = req.body;
+    const { doctorId, userId, date, time } = req.body;
 
     // Check if doctor and patient exist
     const doctor = await DoctorModel.findById(doctorId);
@@ -245,21 +270,25 @@ const createAppointment = asyncHandler(async (req, res) => {
       return res.status(404).send({ message: "Doctor not found" });
     }
 
-    const patient = await UserModel.findById(patientId); // Assuming `UserModel` is the patient model
+    const patient = await UserModel.findById(userId); // Assuming `UserModel` is the patient model
     if (!patient) {
       return res.status(404).send({ message: "Patient not found" });
     }
 
     // Check if the same time slot already has an appointment
-    const existingAppointment = doctor.appointments.find((appointment) => appointment.date === date && appointment.time === time);
+    const existingAppointment = doctor.appointments.find(
+      (appointment) => appointment.date === date && appointment.time === time
+    );
 
     if (existingAppointment) {
-      return res.status(400).send({ message: "This time slot is already booked" });
+      return res
+        .status(400)
+        .send({ message: "This time slot is already booked" });
     }
 
     // Create new appointment
     const newAppointment = new AppointmentModel({
-      patient: patientId,
+      patient: userId,
       date,
       time,
       status: "Scheduled", // Appointment status
@@ -287,7 +316,10 @@ const getAppointments = asyncHandler(async (req, res) => {
     const { doctorId } = req.body; // Get doctorId from request params
 
     // Find the doctor by ID and populate the appointments with patient details
-    const doctor = await DoctorModel.findById(doctorId).populate("appointments.patient", "name email avatar"); // Populate patient info in appointments
+    const doctor = await DoctorModel.findById(doctorId).populate(
+      "appointments.patient",
+      "name email avatar"
+    ); // Populate patient info in appointments
 
     if (!doctor) {
       return res.status(404).send({ message: "Doctor not found" });
@@ -341,6 +373,101 @@ const verifyDoctor = asyncHandler(async (req, res) => {
   }
 });
 
+const listDoctors = asyncHandler(async (req, res) => {
+  try {
+    // Find the doctor by ID
+    const doctors = await DoctorModel.find({ verified: false }).select(
+      "-password"
+    );
+
+    return res.status(200).send({
+      doctors,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
+      message: "An unexpected error occurred",
+      error: error.message,
+    });
+  }
+});
+const listSingleDoctor = asyncHandler(async (req, res) => {
+  const doctorId = req.params.id;
+  try {
+    // Find the doctor by ID
+    const doctor = await DoctorModel.findById(doctorId).select("-password");
+
+    return res.status(200).send(doctor);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
+      message: "An unexpected error occurred",
+      error: error.message,
+    });
+  }
+});
+
+const listVerifiedDoctors = asyncHandler(async (req, res) => {
+  try {
+    // Find the doctor by ID
+    const doctors = await DoctorModel.find({ verified: true }).select(
+      "-password"
+    );
+
+    return res.status(200).send({
+      doctors,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
+      message: "An unexpected error occurred",
+      error: error.message,
+    });
+  }
+});
+
+const listAppointments = asyncHandler(async (req, res) => {
+  try {
+    const doctorId = req.params.id; // Get doctorId from the route parameters
+
+    // Find the doctor by ID and populate the appointments with patient details
+    const doctor = await DoctorModel.findById(doctorId).populate({
+      path: "appointments.patient", // Populate the patient field in appointments
+      select: "name email avatar", // Only select necessary fields
+    });
+
+    if (!doctor) {
+      return res.status(404).json({ message: `no appoinments found` });
+    }
+
+    // Extract the patients from the doctor's appointments
+    const appointments = doctor.appointments.map((appointment) => ({
+      patient: appointment.patient,
+      time: appointment.time,
+      status: appointment.status,
+    }));
+
+    // Return the list of patients
+    return res.status(200).json({
+      appointments,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: `Error` });
+  }
+});
+
+const sendMailFromDoctor = asyncHandler(async (req, res) => {
+  let { to, subject, message } = req.body;
+  try {
+    await sendMailFromDoc(to, subject, message);
+    res.status(200).json({ message: "Message Sent to user" });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({ message: "error sending mail" });
+  }
+});
+
 module.exports = {
   RegisterUser,
   LoginUser,
@@ -349,4 +476,9 @@ module.exports = {
   createAppointment,
   getAppointments,
   verifyDoctor,
+  listDoctors,
+  listVerifiedDoctors,
+  listAppointments,
+  listSingleDoctor,
+  sendMailFromDoctor,
 };
